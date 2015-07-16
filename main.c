@@ -52,39 +52,8 @@ int main()
 		printf("tscp> ");
 		if (scanf("%s", s) == EOF)
 			return 0;
-		if (!strcmp(s, "undo")) {
-			if (!hply)
-				continue;
-			computer_side = EMPTY;
-			takeback();
-			ply = 0;
-			gen();
-			continue;
-		}
-		if (!strcmp(s, "new")) {
-			computer_side = EMPTY;
-			init_board();
-			gen();
-			continue;
-		}
 		if (!strcmp(s, "d")) {
 			print_board();
-			continue;
-		}
-		if (!strcmp(s, "bye")) {
-			printf("Share and enjoy!\n");
-			break;
-		}
-		if (!strcmp(s, "help")) {
-			printf("on - computer plays for the side to move\n");
-			printf("off - computer stops playing\n");
-			printf("st n - search for n seconds per move\n");
-			printf("sd n - search n ply per move\n");
-			printf("undo - takes back a move\n");
-			printf("new - starts a new game\n");
-			printf("d - display the board\n");
-			printf("bye - exit the program\n");
-			printf("Enter moves in coordinate notation, e.g., e2e4, e7e8Q\n");
 			continue;
 		}
 
