@@ -28,7 +28,7 @@ int main()
 	init_hash();
 	init_board();
 	gen();
-	computer_side = EMPTY;
+	computer_side = xside;
 	max_depth = 1;
 	for (;;) {
 		if (side == computer_side) {  /* computer's turn */
@@ -52,14 +52,6 @@ int main()
 		printf("tscp> ");
 		if (scanf("%s", s) == EOF)
 			return 0;
-		if (!strcmp(s, "on")) {
-			computer_side = side;
-			continue;
-		}
-		if (!strcmp(s, "off")) {
-			computer_side = EMPTY;
-			continue;
-		}
 		if (!strcmp(s, "undo")) {
 			if (!hply)
 				continue;
