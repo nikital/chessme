@@ -27,7 +27,6 @@ int main()
 
 	init_hash();
 	init_board();
-	open_book();
 	gen();
 	computer_side = EMPTY;
 	max_time = 1 << 25;
@@ -36,7 +35,7 @@ int main()
 		if (side == computer_side) {  /* computer's turn */
 			
 			/* think about the move and make it */
-			think(1);
+			think();
 			if (!pv[0][0].u) {
 				printf("(no legal moves)\n");
 				computer_side = EMPTY;
@@ -119,7 +118,6 @@ int main()
 			print_result();
 		}
 	}
-	close_book();
 	return 0;
 }
 

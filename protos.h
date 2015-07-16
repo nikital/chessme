@@ -29,7 +29,7 @@ int book_move();
 BOOL book_match(char *s1, char *s2);
 
 /* search.c */
-void think(int output);
+void think();
 int search(int alpha, int beta, int depth);
 int quiesce(int alpha, int beta);
 int reps();
