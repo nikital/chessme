@@ -15,21 +15,6 @@
 #include "protos.h"
 
 
-/* get_ms() returns the milliseconds elapsed since midnight,
-   January 1, 1970. */
-
-#include <sys/timeb.h>
-BOOL ftime_ok = FALSE;  /* does ftime return milliseconds? */
-int get_ms()
-{
-	struct timeb timebuffer;
-	ftime(&timebuffer);
-	if (timebuffer.millitm != 0)
-		ftime_ok = TRUE;
-	return (timebuffer.time * 1000) + timebuffer.millitm;
-}
-
-
 /* main() is basically an infinite loop that either calls
    think() when it's the computer's turn to move or prompts
    the user for a command (and deciphers it). */
@@ -114,11 +99,6 @@ int main()
 			print_board();
 			continue;
 		}
-		if (!strcmp(s, "bench")) {
-			computer_side = EMPTY;
-			bench();
-			continue;
-		}
 		if (!strcmp(s, "bye")) {
 			printf("Share and enjoy!\n");
 			break;
@@ -135,7 +115,6 @@ int main()
 			printf("undo - takes back a move\n");
 			printf("new - starts a new game\n");
 			printf("d - display the board\n");
-			printf("bench - run the built-in benchmark\n");
 			printf("bye - exit the program\n");
 			printf("xboard - switch to XBoard mode\n");
 			printf("Enter moves in coordinate notation, e.g., e2e4, e7e8Q\n");
@@ -429,92 +408,3 @@ void print_result()
 		printf("1/2-1/2 {Draw by fifty move rule}\n");
 }
 
-
-/* bench: This is a little benchmark code that calculates how many
-   nodes per second TSCP searches.
-   It sets the position to move 17 of Bobby Fischer vs. J. Sherwin,
-   New Jersey State Open Championship, 9/2/1957.
-   Then it searches five ply three times. It calculates nodes per
-   second from the best time. */
-
-int bench_color[64] = {
-	6, 1, 1, 6, 6, 1, 1, 6,
-	1, 6, 6, 6, 6, 1, 1, 1,
-	6, 1, 6, 1, 1, 6, 1, 6,
-	6, 6, 6, 1, 6, 6, 0, 6,
-	6, 6, 1, 0, 6, 6, 6, 6,
-	6, 6, 0, 6, 6, 6, 0, 6,
-	0, 0, 0, 6, 6, 0, 0, 0,
-	0, 6, 0, 6, 0, 6, 0, 6
-};
-
-int bench_piece[64] = {
-	6, 3, 2, 6, 6, 3, 5, 6,
-	0, 6, 6, 6, 6, 0, 0, 0,
-	6, 0, 6, 4, 0, 6, 1, 6,
-	6, 6, 6, 1, 6, 6, 1, 6,
-	6, 6, 0, 0, 6, 6, 6, 6,
-	6, 6, 0, 6, 6, 6, 0, 6,
-	0, 0, 4, 6, 6, 0, 2, 0,
-	3, 6, 2, 6, 3, 6, 5, 6
-};
-
-void bench()
-{
-	int i;
-	int t[3];
-	double nps;
-
-	/* setting the position to a non-initial position confuses the opening
-	   book code. */
-	close_book();
-
-	for (i = 0; i < 64; ++i) {
-		color[i] = bench_color[i];
-		piece[i] = bench_piece[i];
-	}
-	side = LIGHT;
-	xside = DARK;
-	castle = 0;
-	ep = -1;
-	fifty = 0;
-	ply = 0;
-	hply = 0;
-	set_hash();
-	print_board();
-	max_time = 1 << 25;
-	max_depth = 5;
-	for (i = 0; i < 3; ++i) {
-		think(1);
-		t[i] = get_ms() - start_time;
-		printf("Time: %d ms\n", t[i]);
-	}
-	if (t[1] < t[0])
-		t[0] = t[1];
-	if (t[2] < t[0])
-		t[0] = t[2];
-	printf("\n");
-	printf("Nodes: %d\n", nodes);
-	printf("Best time: %d ms\n", t[0]);
-	if (!ftime_ok) {
-		printf("\n");
-		printf("Your compiler's ftime() function is apparently only accurate\n");
-		printf("to the second. Please change the get_ms() function in main.c\n");
-		printf("to make it more accurate.\n");
-		printf("\n");
-		return;
-	}
-	if (t[0] == 0) {
-		printf("(invalid)\n");
-		return;
-	}
-	nps = (double)nodes / (double)t[0];
-	nps *= 1000.0;
-
-	/* Score: 1.000 = my Athlon XP 2000+ */
-	printf("Nodes per second: %d (Score: %.3f)\n", (int)nps, (float)nps/243169.0);
-
-	init_board();
-	open_book();
-	gen();
-}

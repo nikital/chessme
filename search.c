@@ -13,12 +13,6 @@
 #include "protos.h"
 
 
-/* see the beginning of think() */
-#include <setjmp.h>
-jmp_buf env;
-BOOL stop_search;
-
-
 /* think() calls search() iteratively. Search statistics
    are printed depending on the value of output:
    0 = no output
@@ -34,21 +28,6 @@ void think(int output)
 	if (pv[0][0].u != -1)
 		return;
 
-	/* some code that lets us longjmp back here and return
-	   from think() when our time is up */
-	stop_search = FALSE;
-	setjmp(env);
-	if (stop_search) {
-		
-		/* make sure to take back the line we were searching */
-		while (ply)
-			takeback();
-		return;
-	}
-
-	start_time = get_ms();
-	stop_time = start_time + max_time;
-
 	ply = 0;
 	nodes = 0;
 
@@ -61,9 +40,6 @@ void think(int output)
 		x = search(-10000, 10000, i);
 		if (output == 1)
 			printf("%3d  %9d  %5d ", i, nodes, x);
-		else if (output == 2)
-			printf("%d %d %d %d",
-					i, x, (get_ms() - start_time) / 10, nodes);
 		if (output) {
 			for (j = 0; j < pv_length[0]; ++j)
 				printf(" %s", move_str(pv[0][j].b));
@@ -88,10 +64,6 @@ int search(int alpha, int beta, int depth)
 	if (!depth)
 		return quiesce(alpha,beta);
 	++nodes;
-
-	/* do some housekeeping every 1024 nodes */
-	if ((nodes & 1023) == 0)
-		checkup();
 
 	pv_length[ply] = ply;
 
@@ -170,10 +142,6 @@ int quiesce(int alpha,int beta)
 	int i, j, x;
 
 	++nodes;
-
-	/* do some housekeeping every 1024 nodes */
-	if ((nodes & 1023) == 0)
-		checkup();
 
 	pv_length[ply] = ply;
 
@@ -279,15 +247,3 @@ void sort(int from)
 	gen_dat[bi] = g;
 }
 
-
-/* checkup() is called once in a while during the search. */
-
-void checkup()
-{
-	/* is the engine's time up? if so, longjmp back to the
-	   beginning of think() */
-	if (get_ms() >= stop_time) {
-		stop_search = TRUE;
-		longjmp(env, 0);
-	}
-}
