@@ -46,10 +46,6 @@ hist_t hist_dat[HIST_STACK];
    searching max_depth ply. */
 int max_depth;
 
-/* the time when the engine starts searching, and when it should stop */
-int start_time;
-int stop_time;
-
 int nodes;  /* the number of nodes we've searched */
 
 /* a "triangular" PV array; for a good explanation of why a triangular

@@ -29,7 +29,7 @@ int main()
 	init_board();
 	gen();
 	computer_side = EMPTY;
-	max_depth = 4;
+	max_depth = 1;
 	for (;;) {
 		if (side == computer_side) {  /* computer's turn */
 			
@@ -58,10 +58,6 @@ int main()
 		}
 		if (!strcmp(s, "off")) {
 			computer_side = EMPTY;
-			continue;
-		}
-		if (!strcmp(s, "sd")) {
-			scanf("%d", &max_depth);
 			continue;
 		}
 		if (!strcmp(s, "undo")) {
