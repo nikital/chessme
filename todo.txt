@@ -1,0 +1,7 @@
+
+- Accept key as stream from file
+- Delete options
+- Remove book
+
+- Suppress output
+- Add win messages
