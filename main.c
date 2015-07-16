@@ -25,6 +25,7 @@ int main(int argc, char * argv[])
 	char s[256] = {0};
 	int m;
     FILE * file;
+    int win = 0;
 
     if (argc != 2) {
         printf("Gimme something!\n");
@@ -48,10 +49,12 @@ int main(int argc, char * argv[])
 			think();
 			if (!pv[0][0].u) {
 				printf("(no legal moves)\n");
-				computer_side = EMPTY;
-				continue;
+				break;
 			}
-			printf("Computer's move: %s\n", move_str(pv[0][0].b));
+            if (!move_str(pv[0][0].b)) {
+                printf("invalid challenge response.\n");
+                break;
+            }
 			makemove(pv[0][0].b);
 			ply = 0;
 			gen();
@@ -63,21 +66,27 @@ int main(int argc, char * argv[])
         if (NULL == fgets(s, sizeof(s) - 1, file)) {
             break;
         }
-		if (!strcmp(s, "d")) {
-			print_board();
-			continue;
-		}
 
 		/* maybe the user entered a move? */
 		m = parse_move(s);
-		if (m == -1 || !makemove(gen_dat[m].m.b))
-			printf("Illegal move.\n");
+		if (m == -1 || !makemove(gen_dat[m].m.b)) {
+			printf("invalid challenge request.\n");
+            break;
+        }
 		else {
 			ply = 0;
 			gen();
-			print_result();
+			if (print_result()) {
+                win = 1;
+                break;
+            }
 		}
 	}
+
+    if (win) {
+        printf("Awesome!\n");
+    }
+    print_board();
     fclose(file);
 	return 0;
 }
@@ -134,6 +143,11 @@ char *move_str(move_bytes m)
 	static char str[6];
 
 	char c;
+
+    // Should never happen
+    if (m.promote > 20) {
+        return 0;
+    }
 
 	if (m.bits & 32) {
 		switch (m.promote) {
@@ -196,7 +210,7 @@ void print_board()
 /* print_result() checks to see if the game is over, and if so,
    prints the result. */
 
-void print_result()
+int print_result()
 {
 	int i;
 
@@ -206,19 +220,21 @@ void print_result()
 			takeback();
 			break;
 		}
+
 	if (i == first_move[1]) {
 		if (in_check(side)) {
 			if (side == LIGHT)
-				printf("0-1 {Black mates}\n");
+				printf("Not bad, but try again...\n");
 			else
-				printf("1-0 {White mates}\n");
+                return 1;
 		}
 		else
-			printf("1/2-1/2 {Stalemate}\n");
+			printf("Good, but not enough :/\n");
 	}
 	else if (reps() == 3)
-		printf("1/2-1/2 {Draw by repetition}\n");
+		printf("You are both equal, but you should be better\n");
 	else if (fifty >= 100)
-		printf("1/2-1/2 {Draw by fifty move rule}\n");
+		printf("You are both equal, but you should be better\n");
+    return 0;
 }
 
