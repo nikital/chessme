@@ -44,7 +44,6 @@ hist_t hist_dat[HIST_STACK];
 
 /* the engine will search for max_time milliseconds or until it finishes
    searching max_depth ply. */
-int max_time;
 int max_depth;
 
 /* the time when the engine starts searching, and when it should stop */

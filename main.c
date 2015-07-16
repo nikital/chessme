@@ -29,7 +29,6 @@ int main()
 	init_board();
 	gen();
 	computer_side = EMPTY;
-	max_time = 1 << 25;
 	max_depth = 4;
 	for (;;) {
 		if (side == computer_side) {  /* computer's turn */
@@ -61,15 +60,8 @@ int main()
 			computer_side = EMPTY;
 			continue;
 		}
-		if (!strcmp(s, "st")) {
-			scanf("%d", &max_time);
-			max_time *= 1000;
-			max_depth = 32;
-			continue;
-		}
 		if (!strcmp(s, "sd")) {
 			scanf("%d", &max_depth);
-			max_time = 1 << 25;
 			continue;
 		}
 		if (!strcmp(s, "undo")) {
