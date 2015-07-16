@@ -19,11 +19,22 @@
    think() when it's the computer's turn to move or prompts
    the user for a command (and deciphers it). */
 
-int main()
+int main(int argc, char * argv[])
 {
 	int computer_side;
-	char s[256];
+	char s[256] = {0};
 	int m;
+    FILE * file;
+
+    if (argc != 2) {
+        printf("Gimme something!\n");
+        return 0;
+    }
+
+    if (!(file = fopen(argv[1], "r"))) {
+        printf("No key :(\n");
+        return 0;
+    }
 
 	init_hash();
 	init_board();
@@ -49,9 +60,9 @@ int main()
 		}
 
 		/* get user input */
-		printf("tscp> ");
-		if (scanf("%s", s) == EOF)
-			return 0;
+        if (NULL == fgets(s, sizeof(s) - 1, file)) {
+            break;
+        }
 		if (!strcmp(s, "d")) {
 			print_board();
 			continue;
@@ -67,6 +78,7 @@ int main()
 			print_result();
 		}
 	}
+    fclose(file);
 	return 0;
 }
 
