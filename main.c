@@ -81,13 +81,13 @@ int main(int argc, char * argv[])
 
     if (win == 1) {
         printf("Awesome!\n");
+        print_board();
     } else if (win == -1) {
         printf("Invalid key\n");
     } else {
-        printf("Incomlete key\n");
+        printf("Incomplete key\n");
     }
 
-    print_board();
     fclose(file);
 	return 0;
 }
