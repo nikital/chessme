@@ -22,12 +22,6 @@ void gen_promote(int from, int to, int bits);
 BOOL makemove(move_bytes m);
 void takeback();
 
-/* book.c */
-void open_book();
-void close_book();
-int book_move();
-BOOL book_match(char *s1, char *s2);
-
 /* search.c */
 void think();
 int search(int alpha, int beta, int depth);
