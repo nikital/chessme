@@ -208,7 +208,8 @@ void print_board()
 
 
 /* print_result() checks to see if the game is over, and if so,
-   prints the result. */
+   prints the result.
+   Returns 1 if white won, -1 if game is lost, 0 if nothing interesting happened*/
 
 int print_result()
 {
@@ -224,16 +225,21 @@ int print_result()
 	if (i == first_move[1]) {
 		if (in_check(side)) {
 			if (side == LIGHT)
+                // Black mates
 				printf("Not bad, but try again...\n");
 			else
+                // White mates
                 return 1;
 		}
 		else
+            // Stalemate
 			printf("Good, but not enough :/\n");
 	}
 	else if (reps() == 3)
+        // Draw by repetition
 		printf("You are both equal, but you should be better\n");
 	else if (fifty >= 100)
+        // Draw by fifty rule
 		printf("You are both equal, but you should be better\n");
     return 0;
 }
