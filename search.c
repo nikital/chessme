@@ -18,7 +18,7 @@
 
 void think()
 {
-	int i, j, x;
+	int i, x;
 
 	pv[0][0].u = -1;
 

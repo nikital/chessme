@@ -48,7 +48,7 @@ int main(int argc, char * argv[])
 			/* think about the move and make it */
 			think();
 			if (!pv[0][0].u) {
-				printf("(no legal moves)\n");
+				printf("no response\n");
 				break;
 			}
             if (!move_str(pv[0][0].b)) {
@@ -56,36 +56,37 @@ int main(int argc, char * argv[])
                 break;
             }
 			makemove(pv[0][0].b);
-			ply = 0;
-			gen();
-			print_result();
-			continue;
-		}
 
-		/* get user input */
-        if (NULL == fgets(s, sizeof(s) - 1, file)) {
-            break;
-        }
-
-		/* maybe the user entered a move? */
-		m = parse_move(s);
-		if (m == -1 || !makemove(gen_dat[m].m.b)) {
-			printf("invalid challenge request.\n");
-            break;
-        }
-		else {
-			ply = 0;
-			gen();
-			if (print_result()) {
-                win = 1;
+		} else {
+            /* get user input */
+            if (NULL == fgets(s, sizeof(s) - 1, file)) {
                 break;
             }
-		}
+
+            m = parse_move(s);
+            if (m == -1 || !makemove(gen_dat[m].m.b)) {
+                printf("invalid challenge request.\n");
+                break;
+            }
+        }
+
+        ply = 0;
+        gen();
+        win = print_result();
+        if (win != 0) {
+            break;
+        }
+
 	}
 
-    if (win) {
+    if (win == 1) {
         printf("Awesome!\n");
+    } else if (win == -1) {
+        printf("Invalid key\n");
+    } else {
+        printf("Incomlete key\n");
     }
+
     print_board();
     fclose(file);
 	return 0;
@@ -209,38 +210,48 @@ void print_board()
 
 /* print_result() checks to see if the game is over, and if so,
    prints the result.
-   Returns 1 if white won, -1 if game is lost, 0 if nothing interesting happened*/
+   Returns 1 if white won, -1 if game is lost, 0 if nothing interesting happened */
 
 int print_result()
 {
 	int i;
 
 	/* is there a legal move? */
-	for (i = 0; i < first_move[1]; ++i)
-		if (makemove(gen_dat[i].m.b)) {
-			takeback();
-			break;
-		}
+	for (i = 0; i < first_move[1]; ++i) {
+        if (makemove(gen_dat[i].m.b)) {
+            takeback();
+            break;
+        }
+    }
 
 	if (i == first_move[1]) {
 		if (in_check(side)) {
-			if (side == LIGHT)
+			if (side == LIGHT) {
                 // Black mates
 				printf("Not bad, but try again...\n");
-			else
+                return -1;
+            }
+			else {
                 // White mates
                 return 1;
+            }
 		}
-		else
+		else {
             // Stalemate
-			printf("Good, but not enough :/\n");
+            printf("Good, but not enough :/\n");
+            return -1;
+        }
 	}
-	else if (reps() == 3)
+	else if (reps() == 3) {
         // Draw by repetition
-		printf("You are both equal, but you should be better\n");
-	else if (fifty >= 100)
+        printf("You are both equal, but you should be better\n");
+        return -1;
+    }
+	else if (fifty >= 100) {
         // Draw by fifty rule
-		printf("You are both equal, but you should be better\n");
+        printf("You are both equal, but you should be better\n");
+        return -1;
+    }
     return 0;
 }
 
