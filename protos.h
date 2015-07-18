@@ -47,4 +47,5 @@ char *move_str(move_bytes m);
 void print_board();
 void xboard();
 int print_result();
+void print_quote();
 void bench();

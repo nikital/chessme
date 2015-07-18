@@ -80,12 +80,15 @@ int main(int argc, char * argv[])
 	}
 
     if (win == 1) {
-        printf("Awesome!\n");
+        printf("Awesome, your key is valid!\n");
+        // TODO insert congratulations here
         print_board();
     } else if (win == -1) {
         printf("Invalid key\n");
+        print_quote();
     } else {
         printf("Incomplete key\n");
+        print_quote();
     }
 
     fclose(file);
@@ -255,3 +258,8 @@ int print_result()
     return 0;
 }
 
+void print_quote()
+{
+    // TODO insert quotes here
+    printf("Aristotle used to say that the roots of education are bitter, but the fruit is sweet\n");
+}
