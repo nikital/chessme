@@ -1,4 +1,4 @@
-CFLAGS = -g -Wall
+CFLAGS = -Wall -O2
 EXEC = chessme
 SOURCES = board.c data.c eval.c main.c search.c
 OBJECTS = ${SOURCES:.c=.o}
