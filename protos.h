@@ -48,7 +48,6 @@ int eval_dkp(int f);
 
 /* main.c */
 int get_ms();
-int main();
 int parse_move(char *s);
 char *move_str(move_bytes m);
 void print_board();
