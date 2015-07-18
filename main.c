@@ -228,7 +228,7 @@ int print_result()
 		if (in_check(side)) {
 			if (side == LIGHT) {
                 // Black mates
-				printf("Not bad, but try again...\n");
+				printf("I guess you're not up to the challenge...\n");
                 return -1;
             }
 			else {
@@ -238,18 +238,18 @@ int print_result()
 		}
 		else {
             // Stalemate
-            printf("Good, but not enough :/\n");
+            printf("We are both equal, but you should be better\n");
             return -1;
         }
 	}
 	else if (reps() == 3) {
         // Draw by repetition
-        printf("You are both equal, but you should be better\n");
+        printf("We are both equal, but you should be better\n");
         return -1;
     }
 	else if (fifty >= 100) {
         // Draw by fifty rule
-        printf("You are both equal, but you should be better\n");
+        printf("We are both equal, but you should be better\n");
         return -1;
     }
     return 0;
