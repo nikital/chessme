@@ -13,6 +13,8 @@
 #include "defs.h"
 #include "data.h"
 #include "protos.h"
+#include <time.h>
+
 
 
 /* main() is basically an infinite loop that either calls
@@ -261,5 +263,32 @@ int print_result()
 void print_quote()
 {
     // TODO insert quotes here
-    printf("Aristotle used to say that the roots of education are bitter, but the fruit is sweet\n");
+    srand(time(NULL));
+    int a = rand() % 8;
+    switch(a) {
+	    case 0:
+		    printf("Aristotle used to say that the roots of education are bitter, but the fruit is sweet\n");
+		    break;
+	    case 1:
+		    printf("Try again later... \nBTW, The highest activity a human being can attain is learning for understanding, because to understand is to be free (Spinoza)\n");
+		    break;
+	    case 2:
+		    printf("No - Thats bad. But don't take this too hard, If men were born free, they would, so long as they remained free, form no conception of good and bad (Spinoza)\n");
+		    break;
+	    case 3:
+		    printf("Try again man... You know, You will never do anything in this world without courage. It is the greatest quality of the mind next to honor (Aristotal)\n");
+		    break;
+	    case 4:
+		    printf("NO NO NO . As pythagoras used to say, Silence is better than unmeaning words.\n");
+		    break;
+	    case 5:
+		    printf("NOOOOO. Pythagoras used to say that the oldest, shortest words - 'yes' and 'no' - are those which require the most thought.\n");
+		    break;
+	    case 6:
+		    printf("Try again... Not ignorance, but ignorance of ignorance, is the death of knowledge (whitehead).\n");
+		    break;
+	    case 7:
+		    printf("Absolutely no. The guiding motto in the life of every natural philosopher should be, seek simplicity and distrust it. Try it.\n");
+		    break;
+    }
 }
