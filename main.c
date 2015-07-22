@@ -15,7 +15,7 @@
 #include "protos.h"
 #include <time.h>
 
-
+int g_debug = 0;
 
 /* main() is basically an infinite loop that either calls
    think() when it's the computer's turn to move or prompts
@@ -28,6 +28,7 @@ int main(int argc, char * argv[])
 	int m;
     FILE * file;
     int win = 0;
+    char * computer_move;
 
     if (argc != 2) {
         printf("Gimme something!\n");
@@ -46,18 +47,25 @@ int main(int argc, char * argv[])
 	max_depth = 1;
 	for (;;) {
 		if (side == computer_side) {  /* computer's turn */
-			
+
 			/* think about the move and make it */
 			think();
 			if (!pv[0][0].u) {
-				printf("no response\n");
+				printf("No response\n");
 				break;
 			}
-            if (!move_str(pv[0][0].b)) {
-                printf("invalid challenge response.\n");
+            computer_move = move_str(pv[0][0].b);
+            if (!computer_move) {
+                printf("Internal error!\n");
+                g_debug = 1;
                 break;
             }
 			makemove(pv[0][0].b);
+            if (g_debug) {
+                printf("Response: %s\n", computer_move);
+                printf("State:\n");
+                print_board();
+            }
 
 		} else {
             /* get user input */
@@ -67,7 +75,7 @@ int main(int argc, char * argv[])
 
             m = parse_move(s);
             if (m == -1 || !makemove(gen_dat[m].m.b)) {
-                printf("invalid challenge request.\n");
+                printf("Invalid move.\n");
                 break;
             }
         }
@@ -109,8 +117,11 @@ int parse_move(char *s)
 	if (s[0] < 'a' || s[0] > 'h' ||
 			s[1] < '0' || s[1] > '9' ||
 			s[2] < 'a' || s[2] > 'h' ||
-			s[3] < '0' || s[3] > '9')
+			s[3] < '0' || s[3] > '9') {
+
+        printf("Bad input\n");
 		return -1;
+    }
 
 	from = s[0] - 'a';
 	from += 8 * (8 - (s[1] - '0'));
@@ -151,7 +162,7 @@ char *move_str(move_bytes m)
 	char c;
 
     // Should never happen
-    if (m.promote > 20) {
+    if (m.promote > EMPTY) {
         return 0;
     }
 
@@ -192,7 +203,7 @@ char *move_str(move_bytes m)
 void print_board()
 {
 	int i;
-	
+
 	printf("\n8 ");
 	for (i = 0; i < 64; ++i) {
 		switch (color[i]) {
