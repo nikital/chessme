@@ -97,7 +97,7 @@ int main(int argc, char * argv[])
         printf("Awesome, your key is valid!\n");
 	char* key = "THISISALLABOUTPWNING";
 
-	printf(xorencrypt(good_str_enc, key, strlen(good_str_enc)));
+	printf("%s\n", xorencrypt(good_str_enc, key, strlen(good_str_enc)));
         print_board();
     } else if (win == -1) {
         printf("Invalid key\n");
