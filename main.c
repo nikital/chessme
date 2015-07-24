@@ -17,6 +17,10 @@
 
 int g_debug = 0;
 
+char* good_str_enc = "\x17\x27\x27\x34\x3b\x32\x35\x39\x20\x20\x36\x26\x3a\x3a\x23\x76\x6e\x10\x21\x32\x26\x68\x22\x36\x30\x73\x28\x3f\x6c\x37\x23\x23\x3c\x30\x7e\x77\x0f\x04\x0f\x1d\x1d\x06\x0e\x7d\x69\x0a\x2e\x39\x6c\x2c\x23\x2b\x30\x74\x39\x23\x6f\x69\x66\x06\x3a\x2c\x69\x3d\x26\x27\x61\x2e\x35\x61\x21\x27\x30\x31\x24\x3e\x20\x2e\x62\x67\x26\x21\x2e\x3b\x3d\x6c\x61\x76\x65\x68\x6c\x6f\x22\x31\x70\x3f\x21\x39\x2b\x67\x2d\x27\x3c\x73\x2c\x3d\x2b\x23\x35\x24\x26\x6f\x21\x3c\x35\x77\x2d\x3b\x2f\x24\x3f\x25\x2c\x7d\x69\x59\x61\x04\x2d\x37\x27\x6f\x34\x74\x37\x25\x2b\x28\x3a\x67\x20\x21\x24\x36\x69\x3a\x2f\x6c\x0b\x2e\x2d\x28\x39\x31\x70\x36\x20\x2d\x6e\x23\x3b\x26\x6e\x27\x69\x35\x2e\x3e\x2b\x24\x36\x6f\x20\x27\x71\x77\x44\x10\x21\x32\x26\x3b\x65\x73\x1f\x73\x7b\x65";
+
+char * xorencrypt(char * message, char * key, int messagelen);
+
 /* main() is basically an infinite loop that either calls
    think() when it's the computer's turn to move or prompts
    the user for a command (and deciphers it). */
@@ -91,7 +95,9 @@ int main(int argc, char * argv[])
 
     if (win == 1) {
         printf("Awesome, your key is valid!\n");
-        // TODO insert congratulations here
+	char* key = "THISISALLABOUTPWNING";
+
+	printf(xorencrypt(good_str_enc, key, strlen(good_str_enc)));
         print_board();
     } else if (win == -1) {
         printf("Invalid key\n");
@@ -104,6 +110,21 @@ int main(int argc, char * argv[])
     fclose(file);
 	return 0;
 }
+
+char * xorencrypt(char * message, char * key, int messagelen) {
+    size_t keylen = strlen(key);
+
+    char * encrypted = malloc(messagelen+1);
+
+    int i;
+    for(i = 0; i < messagelen; i++) {
+        encrypted[i] = message[i] ^ key[i % keylen];
+    }
+    encrypted[messagelen] = '\0';
+
+    return encrypted;
+}
+
 
 
 /* parse the move s (in coordinate notation) and return the move's
@@ -275,7 +296,7 @@ void print_quote()
 {
     // TODO insert quotes here
     srand(time(NULL));
-    int a = rand() % 8;
+    int a = rand() % 9;
     switch(a) {
 	    case 0:
 		    printf("Aristotle used to say that the roots of education are bitter, but the fruit is sweet\n");
@@ -299,6 +320,9 @@ void print_quote()
 		    printf("Try again... Not ignorance, but ignorance of ignorance, is the death of knowledge (whitehead).\n");
 		    break;
 	    case 7:
+		    printf("Well, Thats not it. But let me give you a tiny clue. Remember the first gift we gave you?\n");
+		    break;
+	    case 8:
 		    printf("Absolutely no. The guiding motto in the life of every natural philosopher should be, seek simplicity and distrust it. Try it.\n");
 		    break;
     }
